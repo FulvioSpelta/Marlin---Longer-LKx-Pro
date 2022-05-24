@@ -96,7 +96,7 @@
 #define LGT_MAC //  For Alphawise and Longer U30 pro LK4 pro
 #define LK4_Pro //  for LK4pro
 //#define LK5_Pro //  for LK5pro
-#define LKPro_BLTOUCH // for LK4 and LK5
+//#define LKPro_BLTOUCH // for LK4 and LK5
 
 #define LKPro_FW_VERSION "G5"
 #define LCD_HEIGHT 4 // number of message lines in the wait screen
@@ -3051,13 +3051,13 @@
 #endif
 
 // Support for Adafruit NeoPixel LED driver
-//#define NEOPIXEL_LED
+#define NEOPIXEL_LED
 #if ENABLED(NEOPIXEL_LED)
-#define NEOPIXEL_TYPE NEO_GRBW // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
-//#define NEOPIXEL_PIN     4     // LED driving pin
+#define NEOPIXEL_TYPE NEO_BRG // NEO_GRBW / NEO_GRB - four/three channel driver type (defined in Adafruit_NeoPixel.h)
+#define NEOPIXEL_PIN     4     // LED driving pin
 //#define NEOPIXEL2_TYPE NEOPIXEL_TYPE
 //#define NEOPIXEL2_PIN    5
-#define NEOPIXEL_PIXELS 15      // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
+#define NEOPIXEL_PIXELS 10      // Number of LEDs in the strip. (Longest strip when NEOPIXEL2_SEPARATE is disabled.)
 #define NEOPIXEL_IS_SEQUENTIAL  // Sequential display for temperature change - LED by LED. Disable to change all LEDs at once.
 #define NEOPIXEL_BRIGHTNESS 127 // Initial brightness (0-255)
 #define NEOPIXEL_STARTUP_TEST   // Cycle through colors at startup
