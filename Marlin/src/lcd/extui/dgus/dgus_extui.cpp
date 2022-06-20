@@ -73,9 +73,9 @@ namespace ExtUI {
 
     void onStatusChanged(const char *const msg) { ScreenHandler.setstatusmessage(msg); }
 
-    void onHomingStart() {}
-    void onHomingComplete() {}
-    void onPrintFinished() {}
+  void onHomingStart() {}
+  void onHomingDone() {}
+  void onPrintDone() {}
 
     void onFactoryReset() {}
 
@@ -101,22 +101,19 @@ namespace ExtUI {
         //  memcpy(&myDataStruct, buff, sizeof(myDataStruct));
     }
 
-    void onPostprocessSettings()
-    {
-        // Called after loading or resetting stored settings
-    }
+  void onSettingsStored(bool success) {
+    // Called after the entire EEPROM has been written,
+    // whether successful or not.
+  }
 
-    void onConfigurationStoreWritten(bool success)
-    {
-        // Called after the entire EEPROM has been written,
-        // whether successful or not.
-    }
+  void onSettingsLoaded(bool success) {
+    // Called after the entire EEPROM has been read,
+    // whether successful or not.
+  }
 
-    void onConfigurationStoreRead(bool success)
-    {
-        // Called after the entire EEPROM has been read,
-        // whether successful or not.
-    }
+  #if HAS_MESH
+    void onLevelingStart() {}
+    void onLevelingDone() {}
 
 #if HAS_MESH
     void onMeshLevelingStart()

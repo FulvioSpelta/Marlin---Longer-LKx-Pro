@@ -46,6 +46,12 @@
 
 DGUSDisplay dgusdisplay;
 
+#ifdef DEBUG_DGUSLCD_COMM
+  #define DEBUGLCDCOMM_ECHOPGM DEBUG_ECHOPGM
+#else
+  #define DEBUGLCDCOMM_ECHOPGM(...) NOOP
+#endif
+
 // Preamble... 2 Bytes, usually 0x5A 0xA5, but configurable
 constexpr uint8_t DGUS_HEADER1 = 0x5A;
 constexpr uint8_t DGUS_HEADER2 = 0xA5;
@@ -104,12 +110,6 @@ void DGUSDisplay::WriteVariable(uint16_t adr, int8_t value) {
   WriteVariable(adr, static_cast<const void*>(&value), sizeof(int8_t));
 }
 
-#if ENABLED(DGUS_LCD_UI_MKS)
-void DGUSDisplay::MKS_WriteVariable(uint16_t adr, uint8_t value) {
-  WriteVariable(adr, static_cast<const void*>(&value), sizeof(uint8_t));
-}
-#endif
-
 void DGUSDisplay::WriteVariable(uint16_t adr, long value) {
   union   {
     long l;
@@ -157,22 +157,21 @@ void DGUSDisplay::ProcessRx() {
   while (LCD_SERIAL.available()) {
     switch (rx_datagram_state) {
 
-    case DGUS_IDLE: // Waiting for the first header byte
-      receivedbyte = LCD_SERIAL.read();
-      //DEBUG_ECHOPGM("< ",x);
-      if (DGUS_HEADER1 == receivedbyte)
-        rx_datagram_state = DGUS_HEADER1_SEEN;
-      break;
+      case DGUS_IDLE: // Waiting for the first header byte
+        receivedbyte = LCD_SERIAL.read();
+        //DEBUGLCDCOMM_ECHOPGM("< ", receivedbyte);
+        if (DGUS_HEADER1 == receivedbyte) rx_datagram_state = DGUS_HEADER1_SEEN;
+        break;
 
-    case DGUS_HEADER1_SEEN: // Waiting for the second header byte
-      receivedbyte = LCD_SERIAL.read();
-      //DEBUG_ECHOPGM(" ",x);
-      rx_datagram_state = (DGUS_HEADER2 == receivedbyte) ? DGUS_HEADER2_SEEN : DGUS_IDLE;
-      break;
+      case DGUS_HEADER1_SEEN: // Waiting for the second header byte
+        receivedbyte = LCD_SERIAL.read();
+        //DEBUGLCDCOMM_ECHOPGM(" ", receivedbyte);
+        rx_datagram_state = (DGUS_HEADER2 == receivedbyte) ? DGUS_HEADER2_SEEN : DGUS_IDLE;
+        break;
 
-    case DGUS_HEADER2_SEEN: // Waiting for the length byte
-      rx_datagram_len = LCD_SERIAL.read();
-      DEBUG_ECHOPGM(" (", rx_datagram_len, ") ");
+      case DGUS_HEADER2_SEEN: // Waiting for the length byte
+        rx_datagram_len = LCD_SERIAL.read();
+        //DEBUGLCDCOMM_ECHOPGM(" (", rx_datagram_len, ") ");
 
       // Telegram min len is 3 (command and one word of payload)
       rx_datagram_state = WITHIN(rx_datagram_len, 3, DGUS_RX_BUFFER_SIZE) ? DGUS_WAIT_TELEGRAM : DGUS_IDLE;
@@ -185,23 +184,23 @@ void DGUSDisplay::ProcessRx() {
       Initialized = true; // We've talked to it, so we defined it as initialized.
       uint8_t command = LCD_SERIAL.read();
 
-      DEBUG_ECHOPGM("# ", command);
+        //DEBUGLCDCOMM_ECHOPGM("# ", command);
 
-      uint8_t readlen = rx_datagram_len - 1; // command is part of len.
-      unsigned char tmp[rx_datagram_len - 1];
-      unsigned char* ptmp = tmp;
-      while (readlen--) {
-        receivedbyte = LCD_SERIAL.read();
-        DEBUG_ECHOPGM(" ", receivedbyte);
-        *ptmp++ = receivedbyte;
-      }
-      DEBUG_ECHOPGM(" # ");
-      // mostly we'll get this: 5A A5 03 82 4F 4B -- ACK on 0x82, so discard it.
-      if (command == DGUS_CMD_WRITEVAR && 'O' == tmp[0] && 'K' == tmp[1]) {
-        DEBUG_ECHOLNPGM(">");
-        rx_datagram_state = DGUS_IDLE;
-        break;
-      }
+        uint8_t readlen = rx_datagram_len - 1;  // command is part of len.
+        unsigned char tmp[rx_datagram_len - 1];
+        unsigned char *ptmp = tmp;
+        while (readlen--) {
+          receivedbyte = LCD_SERIAL.read();
+          //DEBUGLCDCOMM_ECHOPGM(" ", receivedbyte);
+          *ptmp++ = receivedbyte;
+        }
+        //DEBUGLCDCOMM_ECHOPGM(" # ");
+        // mostly we'll get this: 5A A5 03 82 4F 4B -- ACK on 0x82, so discard it.
+        if (command == DGUS_CMD_WRITEVAR && 'O' == tmp[0] && 'K' == tmp[1]) {
+          //DEBUGLCDCOMM_ECHOPGM(">");
+          rx_datagram_state = DGUS_IDLE;
+          break;
+        }
 
       /* AutoUpload, (and answer to) Command 0x83 :
         |      tmp[0  1  2  3  4 ... ]
@@ -251,7 +250,7 @@ void DGUSDisplay::WritePGM(const char str[], uint8_t len) {
 }
 
 void DGUSDisplay::loop() {
-  // protect against recursion… ProcessRx() may indirectly call idle() when injecting gcode commands.
+  // Protect against recursion. ProcessRx() may indirectly call idle() when injecting G-code commands.
   if (!no_reentrance) {
     no_reentrance = true;
     ProcessRx();
@@ -261,8 +260,8 @@ void DGUSDisplay::loop() {
 
 rx_datagram_state_t DGUSDisplay::rx_datagram_state = DGUS_IDLE;
 uint8_t DGUSDisplay::rx_datagram_len = 0;
-bool DGUSDisplay::Initialized = false;
-bool DGUSDisplay::no_reentrance = false;
+bool DGUSDisplay::Initialized = false,
+     DGUSDisplay::no_reentrance = false;
 
 // A SW memory barrier, to ensure GCC does not overoptimize loops
 #define sw_barrier() asm volatile("" \
@@ -270,12 +269,11 @@ bool DGUSDisplay::no_reentrance = false;
                                   :  \
                                   : "memory");
 
-bool populate_VPVar(const uint16_t VP, DGUS_VP_Variable* const ramcopy) {
-  // DEBUG_ECHOPGM("populate_VPVar ", VP);
-  const DGUS_VP_Variable* pvp = DGUSLCD_FindVPVar(VP);
-  // DEBUG_ECHOLNPGM(" pvp ", (uint16_t )pvp);
-  if (!pvp)
-    return false;
+bool populate_VPVar(const uint16_t VP, DGUS_VP_Variable * const ramcopy) {
+  //DEBUG_ECHOPGM("populate_VPVar ", VP);
+  const DGUS_VP_Variable *pvp = DGUSLCD_FindVPVar(VP);
+  //DEBUG_ECHOLNPGM(" pvp ", (uint16_t )pvp);
+  if (!pvp) return false;
   memcpy_P(ramcopy, pvp, sizeof(DGUS_VP_Variable));
   return true;
 }

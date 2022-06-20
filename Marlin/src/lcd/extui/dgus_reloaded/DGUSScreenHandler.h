@@ -136,12 +136,12 @@ private:
     static millis_t status_expire;
     static millis_t eeprom_save;
 
-    typedef struct {
-        bool initialized;
-        uint8_t volume;
-        uint8_t brightness;
-        bool abl;
-    } eeprom_data_t;
+  typedef struct {
+    bool initialized;
+    uint8_t volume;
+    uint8_t brightness;
+    bool abl_okay;
+  } eeprom_data_t;
 };
 
 extern DGUSScreenHandler dgus_screen_handler;

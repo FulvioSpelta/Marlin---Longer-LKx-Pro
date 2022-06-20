@@ -101,6 +101,14 @@ namespace ExtUI {
     dgus_screen_handler.SetStatusMessage(msg);
   }
 
+  void onHomingStart() {}
+  
+  void onHomingDone() {}
+  
+  void onPrintDone() {
+    dgus_screen_handler.PrintFinished();
+  }
+
   void onFactoryReset() {
     dgus_screen_handler.SettingsReset();
   }
@@ -113,11 +121,13 @@ namespace ExtUI {
     dgus_screen_handler.LoadSettings(buff);
   }
 
-  void onConfigurationStoreWritten(bool success) {
+  void onPostprocessSettings() {}
+
+  void onSettingsStored(bool success) {
     dgus_screen_handler.ConfigurationStoreWritten(success);
   }
 
-  void onConfigurationStoreRead(bool success) {
+  void onSettingsLoaded(bool success) {
     dgus_screen_handler.ConfigurationStoreRead(success);
   }
 
@@ -125,6 +135,9 @@ namespace ExtUI {
   void onMeshUpdate(const int8_t xpos, const int8_t ypos, const_float_t zval) {
     dgus_screen_handler.MeshUpdate(xpos, ypos);
   }
+  //#if HAS_MESH
+    void onLevelingStart() {}
+    void onLevelingDone() {}
 
   void onMeshUpdate(const int8_t xpos, const int8_t ypos, const ExtUI::probe_state_t state) {
     if (state == ExtUI::probe_state_t::G29_POINT_FINISH) {
@@ -157,14 +170,10 @@ namespace ExtUI {
   void onSteppersDisabled() {}
   void onSteppersEnabled() {}
 
-  void onHomingStart() {}
-  void onHomingComplete() {}
-
   void onPrintFinished() {
     dgus_screen_handler.PrintFinished();
   }
 
-  void onPostprocessSettings() {}
 }
 
 

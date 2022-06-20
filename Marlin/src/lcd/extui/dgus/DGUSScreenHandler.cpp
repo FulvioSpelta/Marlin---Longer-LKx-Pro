@@ -40,7 +40,7 @@
 #include "../../../feature/powerloss.h"
 #endif
 
-DGUSScreenHandler ScreenHandler;
+DGUSScreenHandlerClass ScreenHandler;
 
 uint16_t DGUSScreenHandler::ConfirmVP;
 
@@ -53,44 +53,40 @@ bool DGUSScreenHandler::ScreenComplete;
 void (*DGUSScreenHandler::confirm_action_cb)() = nullptr;
 
 #if ENABLED(SDSUPPORT)
-int16_t DGUSScreenHandler::top_file = 0,
-        DGUSScreenHandler::file_to_print = 0;
-static ExtUI::FileList filelist;
+  int16_t DGUSScreenHandler::top_file = 0,
+          DGUSScreenHandler::file_to_print = 0;
+  ExtUI::FileList filelist;
 #endif
 
 #if ENABLED(DGUS_FILAMENT_LOADUNLOAD)
 filament_data_t filament_data;
 #endif
 
-void DGUSScreenHandler::sendinfoscreen(const char *line1, const char *line2, const char *line3, const char *line4, bool l1inflash, bool l2inflash, bool l3inflash, bool l4inflash)
-{
-    DGUS_VP_Variable ramcopy;
-    if (populate_VPVar(VP_MSGSTR1, &ramcopy))
-    {
-        ramcopy.memadr = (void *)line1;
-        l1inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
+void DGUSScreenHandler::sendinfoscreen(PGM_P const line1, PGM_P const line2, PGM_P const line3, PGM_P const line4, bool l1inflash, bool l2inflash, bool l3inflash, bool l4inflash) {
+  DGUS_VP_Variable ramcopy;
+  if (populate_VPVar(VP_MSGSTR1, &ramcopy)) {
+    ramcopy.memadr = (void*) line1;
+    l1inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
+  }
+  if (populate_VPVar(VP_MSGSTR2, &ramcopy)) {
+    ramcopy.memadr = (void*) line2;
+    l2inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
+  }
+  if (populate_VPVar(VP_MSGSTR3, &ramcopy)) {
+    ramcopy.memadr = (void*) line3;
+    l3inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
+  }
+  #ifdef VP_MSGSTR4
+    if (populate_VPVar(VP_MSGSTR4, &ramcopy)) {
+      ramcopy.memadr = (void*) line4;
+      l4inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
     }
-    if (populate_VPVar(VP_MSGSTR2, &ramcopy))
-    {
-        ramcopy.memadr = (void *)line2;
-        l2inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
-    }
-    if (populate_VPVar(VP_MSGSTR3, &ramcopy))
-    {
-        ramcopy.memadr = (void *)line3;
-        l3inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
-    }
-    if (populate_VPVar(VP_MSGSTR4, &ramcopy))
-    {
-        ramcopy.memadr = (void *)line4;
-        l4inflash ? DGUSScreenHandler::DGUSLCD_SendStringToDisplayPGM(ramcopy) : DGUSScreenHandler::DGUSLCD_SendStringToDisplay(ramcopy);
-    }
+  #endif
 }
 
-void DGUSScreenHandler::HandleUserConfirmationPopUp(uint16_t VP, const char *line1, const char *line2, const char *line3, const char *line4, bool l1, bool l2, bool l3, bool l4)
-{
-    if (current_screen == DGUSLCD_SCREEN_CONFIRM) // Already showing a pop up, so we need to cancel that first.
-        PopToOldScreen();
+void DGUSScreenHandler::HandleUserConfirmationPopUp(uint16_t VP, PGM_P const line1, PGM_P const line2, PGM_P const line3, PGM_P const line4, bool l1, bool l2, bool l3, bool l4) {
+  if (current_screen == DGUSLCD_SCREEN_CONFIRM) // Already showing a pop up, so we need to cancel that first.
+    PopToOldScreen();
 
     ConfirmVP = VP;
     sendinfoscreen(line1, line2, line3, line4, l1, l2, l3, l4);
@@ -394,7 +390,8 @@ void DGUSScreenHandler::SDCardError()
     sendinfoscreen(F("NOTICE"), nullptr, F("SD card error"), nullptr, true, true, true, true);
     SetupConfirmAction(nullptr);
     GotoScreen(DGUSLCD_SCREEN_POPUP);
-}
+  }
+
 #endif // SDSUPPORT
 
 void DGUSScreenHandler::ScreenConfirmedOK(DGUS_VP_Variable &var, void *val_ptr)
@@ -587,62 +584,46 @@ void DGUSScreenHandler::HandleSettings(DGUS_VP_Variable &var, void *val_ptr)
     }
 }
 
-void DGUSScreenHandler::HandleStepPerMMChanged(DGUS_VP_Variable &var, void *val_ptr)
-{
-    DEBUG_ECHOLNPGM("HandleStepPerMMChanged");
+void DGUSScreenHandler::HandleStepPerMMChanged(DGUS_VP_Variable &var, void *val_ptr) {
+  DEBUG_ECHOLNPGM("HandleStepPerMMChanged");
 
-    uint16_t value_raw = swap16(*(uint16_t *)val_ptr);
-    DEBUG_ECHOLNPGM("value_raw:", value_raw);
-    float value = (float)value_raw / 10;
-    ExtUI::axis_t axis;
-    switch (var.VP)
-    {
-    case VP_X_STEP_PER_MM:
-        axis = ExtUI::axis_t::X;
-        break;
-    case VP_Y_STEP_PER_MM:
-        axis = ExtUI::axis_t::Y;
-        break;
-    case VP_Z_STEP_PER_MM:
-        axis = ExtUI::axis_t::Z;
-        break;
-    default:
-        return;
-    }
-    DEBUG_ECHOLNPAIR_F("value:", value);
-    ExtUI::setAxisSteps_per_mm(value, axis);
-    DEBUG_ECHOLNPAIR_F("value_set:", ExtUI::getAxisSteps_per_mm(axis));
-    skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
-    return;
+  uint16_t value_raw = swap16(*(uint16_t*)val_ptr);
+  DEBUG_ECHOLNPGM("value_raw:", value_raw);
+  float value = (float)value_raw / 10;
+  ExtUI::axis_t axis;
+  switch (var.VP) {
+    case VP_X_STEP_PER_MM: axis = ExtUI::axis_t::X; break;
+    case VP_Y_STEP_PER_MM: axis = ExtUI::axis_t::Y; break;
+    case VP_Z_STEP_PER_MM: axis = ExtUI::axis_t::Z; break;
+    default: return;
+  }
+  DEBUG_ECHOLNPGM("value:", value);
+  ExtUI::setAxisSteps_per_mm(value, axis);
+  DEBUG_ECHOLNPGM("value_set:", ExtUI::getAxisSteps_per_mm(axis));
+  skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
+  return;
 }
 
-void DGUSScreenHandler::HandleStepPerMMExtruderChanged(DGUS_VP_Variable &var, void *val_ptr)
-{
-    DEBUG_ECHOLNPGM("HandleStepPerMMExtruderChanged");
+void DGUSScreenHandler::HandleStepPerMMExtruderChanged(DGUS_VP_Variable &var, void *val_ptr) {
+  DEBUG_ECHOLNPGM("HandleStepPerMMExtruderChanged");
 
-    uint16_t value_raw = swap16(*(uint16_t *)val_ptr);
-    DEBUG_ECHOLNPGM("value_raw:", value_raw);
-    float value = (float)value_raw / 10;
-    ExtUI::extruder_t extruder;
-    switch (var.VP)
-    {
-    default:
-        return;
-#if HAS_EXTRUDERS
-    case VP_E0_STEP_PER_MM:
-        extruder = ExtUI::extruder_t::E0;
-        break;
-#if HAS_MULTI_EXTRUDER
-    case VP_E1_STEP_PER_MM:
-        extruder = ExtUI::extruder_t::E1;
-        break;
-#endif
-#endif
-    }
-    DEBUG_ECHOLNPAIR_F("value:", value);
-    ExtUI::setAxisSteps_per_mm(value, extruder);
-    DEBUG_ECHOLNPAIR_F("value_set:", ExtUI::getAxisSteps_per_mm(extruder));
-    skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
+  uint16_t value_raw = swap16(*(uint16_t*)val_ptr);
+  DEBUG_ECHOLNPGM("value_raw:", value_raw);
+  float value = (float)value_raw / 10;
+  ExtUI::extruder_t extruder;
+  switch (var.VP) {
+    default: return;
+      #if HAS_EXTRUDERS
+        case VP_E0_STEP_PER_MM: extruder = ExtUI::extruder_t::E0; break;
+        #if HAS_MULTI_EXTRUDER
+          case VP_E1_STEP_PER_MM: extruder = ExtUI::extruder_t::E1; break;
+        #endif
+      #endif
+  }
+  DEBUG_ECHOLNPGM("value:", value);
+  ExtUI::setAxisSteps_per_mm(value, extruder);
+  DEBUG_ECHOLNPGM("value_set:", ExtUI::getAxisSteps_per_mm(extruder));
+  skipVP = var.VP; // don't overwrite value the next update time as the display might autoincrement in parallel
 }
 
 #if HAS_PID_HEATING
@@ -739,8 +720,10 @@ void DGUSScreenHandler::HandlePreheat(DGUS_VP_Variable &var, void *val_ptr)
       default:
       switch (var.VP) {
         default: return;
-        case VP_E0_BED_PREHEAT: TERN_(HAS_HOTEND,       ui.preheat_all(0)); break;
-        case VP_E1_BED_PREHEAT: TERN_(HAS_MULTI_HOTEND, ui.preheat_all(1)); break;
+        case VP_E0_BED_PREHEAT: TERN_(HAS_HOTEND, ui.preheat_all(0)); break;
+        #if DISABLED(DGUS_LCD_UI_HIPRECY) && HAS_MULTI_HOTEND
+          case VP_E1_BED_PREHEAT: ui.preheat_all(1); break;
+        #endif
       }
       case 7: break; // Custom preheat
       case 9: thermalManager.cooldown(); break; // Cool down
