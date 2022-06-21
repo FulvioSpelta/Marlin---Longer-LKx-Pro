@@ -31,6 +31,10 @@
 
 #include "../../../gcode/queue.h"
 
+#if HAS_LEVELING
+  #include "../../../feature/bedlevel/bedlevel.h"
+#endif
+
 #if ENABLED(SDSUPPORT)
 bool DGUSSetupHandler::Print() {
     dgus_screen_handler.filelist.refresh();
@@ -133,13 +137,15 @@ bool DGUSSetupHandler::LevelingAutomatic() {
 
         ExtUI::setLevelingActive(true);
     }
+    COPY(dgus_screen_handler.probing_values, bedlevel.z_values);
 
     return true;
 }
 
 bool DGUSSetupHandler::LevelingProbing() {
-    dgus_screen_handler.probing_icons[0] = 0;
-    dgus_screen_handler.probing_icons[1] = 0;
+    dgus_screen_handler.probing_colors[0] = 0;
+    dgus_screen_handler.probing_colors[1] = 0;
+    COPY(dgus_screen_handler.probing_values, bedlevel.z_values);
 
 #if ENABLED(AUTO_BED_LEVELING_UBL)
     queue.enqueue_now_P(PSTR("G29P1\nG29P3\nG29P5C"));

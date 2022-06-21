@@ -154,11 +154,11 @@ void DGUSRxHandler::Scroll(DGUS_VP& vp, void* data_ptr) {
     break;
 
   case DGUS_Data::Scroll::DOWN:
-    if (dgus_screen_handler.filelist_offset + offset >= dgus_screen_handler.filelist.count()) {
-      offset = dgus_screen_handler.filelist.count() - offset;
+    if (dgus_screen_handler.filelist_offset + offset < dgus_screen_handler.filelist.count()) {
+      //offset = dgus_screen_handler.filelist.count() - offset;
+      dgus_screen_handler.filelist_offset += offset;
+//      offset = 0;
     }
-
-    dgus_screen_handler.filelist_offset += offset;
     break;
   }
   DEBUG_ECHOLNPAIR_F("New offset ", dgus_screen_handler.filelist_offset, " file count ", dgus_screen_handler.filelist.count());
@@ -594,6 +594,9 @@ void DGUSRxHandler::Probe(DGUS_VP& vp, void* data_ptr) {
 
     queue.enqueue_now_P(DGUS_CMD_HOME);
     return;
+  }
+  else {
+    dgus_screen_handler.TriggerScreenChange(DGUS_Screen::LEVELING_PROBING);
   }
 }
 #endif

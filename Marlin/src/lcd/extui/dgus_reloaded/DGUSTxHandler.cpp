@@ -369,7 +369,7 @@ void DGUSTxHandler::ABLGrid(DGUS_VP& vp) {
   for (int i = 0; i < DGUS_LEVEL_GRID_SIZE; i++) {
     point.x = i % (GRID_MAX_POINTS_X);
     point.y = i / (GRID_MAX_POINTS_X);
-    fixed = dgus_display.ToFixedPoint<float, int16_t, 3>(ExtUI::getMeshPoint(point));
+    fixed = dgus_display.ToFixedPoint<float, int16_t, 3>(dgus_screen_handler.probing_values[point.x][point.y]);
     DEBUG_ECHOLNPAIR_F("grid x ", point.x, " y ", point.y, " value ", fixed);
     data[i] = Swap16(fixed);
   }
@@ -381,7 +381,7 @@ void DGUSTxHandler::ABLGridColor(DGUS_VP& vp) {
   // Set color for each value
   for (int point = 0; point < DGUS_LEVEL_GRID_SIZE; point++)     {
     uint16_t color = Swap16(COLOR_WHITE);
-    if ((dgus_screen_handler.probing_icons[point < 16 ? 0 : 1] & (1U << (point % 16))) != 0)         {
+    if ((dgus_screen_handler.probing_colors[point < 16 ? 0 : 1] & (1U << (point % 16))) != 0)         {
       color = Swap16(COLOR_GREEN);
     }
     dgus_display.Write((uint16_t)vp.addr + point * DGUS_SP_VARIABLE_LEN + (int)DGUS_SP_Variable::COLOR, color);

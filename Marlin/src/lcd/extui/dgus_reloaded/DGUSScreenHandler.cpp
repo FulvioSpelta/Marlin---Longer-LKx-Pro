@@ -43,7 +43,10 @@ int16_t DGUSScreenHandler::filelist_selected = -1;
 DGUS_Data::StepSize DGUSScreenHandler::offset_steps = DGUS_Data::StepSize::MMP1;
 DGUS_Data::StepSize DGUSScreenHandler::move_steps = DGUS_Data::StepSize::MM10;
 
-uint16_t DGUSScreenHandler::probing_icons[] = { 0, 0 };
+#if HAS_LEVELING
+  uint16_t DGUSScreenHandler::probing_colors[] = { 0, 0 };
+  float DGUSScreenHandler::probing_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y];
+#endif
 uint8_t DGUSScreenHandler::levelingPoint = 0;
 
 DGUS_Data::Extruder DGUSScreenHandler::filament_extruder = DGUS_Data::Extruder::CURRENT;
@@ -326,15 +329,13 @@ void DGUSScreenHandler::MoveToLevelPoint() {
 }
 
 #if HAS_LEVELING
-void DGUSScreenHandler::MeshUpdate(const int8_t xpos, const int8_t ypos) {
-  // if (current_screen == DGUS_Screen::LEVELING_PROBING || current_screen == DGUS_Screen::LEVELING_AUTOMATIC) {
-  //   TriggerFullUpdate();
-  // }
+void DGUSScreenHandler::MeshUpdate(const int8_t xpos, const int8_t ypos, const_float_t zval) {
+  probing_values[xpos][ypos] = zval;
   uint8_t point = ypos * GRID_MAX_POINTS_X + xpos;
-  probing_icons[point < 16 ? 0 : 1] |= (1U << (point % 16));
+  probing_colors[point < 16 ? 0 : 1] |= (1U << (point % 16));
 
   if (xpos >= GRID_MAX_POINTS_X - 1 && ypos >= GRID_MAX_POINTS_Y - 1 && !ExtUI::getMeshValid())
-    probing_icons[0] = probing_icons[1] = 0;
+    probing_colors[0] = probing_colors[1] = 0;
 
   TriggerFullUpdate();
 }

@@ -46,7 +46,7 @@ public:
   static void ConfigurationStoreRead(bool success);
 
   static void PlayTone(const uint16_t frequency, const uint16_t duration);
-  static void MeshUpdate(const int8_t xpos, const int8_t ypos);
+  static void MeshUpdate(const int8_t xpos, const int8_t ypos, const_float_t zval);
   static void PrintTimerStarted();
   static void PrintTimerPaused();
   static void PrintTimerStopped();
@@ -101,7 +101,10 @@ public:
     static DGUS_Data::StepSize offset_steps;
     static DGUS_Data::StepSize move_steps;
 
-    static uint16_t probing_icons[2];
+ #if HAS_LEVELING
+    static uint16_t probing_colors[2];
+    static float probing_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y];
+  #endif
     static uint8_t levelingPoint;
 
     static DGUS_Data::Extruder filament_extruder;
