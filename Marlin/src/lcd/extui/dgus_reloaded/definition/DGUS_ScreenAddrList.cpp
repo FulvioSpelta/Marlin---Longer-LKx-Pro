@@ -205,6 +205,11 @@ constexpr DGUS_Addr LIST_INFOS[] PROGMEM = {
     (DGUS_Addr)0
 };
 
+constexpr DGUS_Addr BOOT_INFOS[] PROGMEM = {
+    DGUS_Addr::INFOS_Version,
+    (DGUS_Addr)0
+};
+
 constexpr DGUS_Addr LIST_STATS[] PROGMEM = {
     DGUS_Addr::INFOS_TotalPrints,
     DGUS_Addr::INFOS_FinishedPrints,
@@ -261,6 +266,7 @@ constexpr DGUS_Addr LIST_ADVANCED_SETTINGS_3[] PROGMEM = {
     }
 
 const struct DGUS_ScreenAddrList screen_addr_list_map[] PROGMEM = {
+    MAP_HELPER(DGUS_Screen::BOOT, BOOT_INFOS),
     MAP_HELPER(DGUS_Screen::HOME, LIST_HOME),
     #if ENABLED(SDSUPPORT)
       MAP_HELPER(DGUS_Screen::PRINT, LIST_PRINT),
