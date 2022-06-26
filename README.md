@@ -1,6 +1,6 @@
-# Marlin 2.0 Printer Firmware For Longer LK4 Pro.
+# Marlin 2.0 Printer Firmware For Longer LK4/LK5 Pro and Alfawise U30 Pro.
 
-**IMPORTANT!! Do not try to update a LK5 Pro unless your current screen version in the About does not specify the letters "DW".
+**IMPORTANT!! This firmware will not work on touch screens other than model DW. In the About, the screen firmware version may have letters following it like "0.3.1 DW". This firmware will work only if your screen has the letters DW or no letters following the version number.
 
 <h1 align="center">Marlin 3D Printer Firmware</h1>
 
