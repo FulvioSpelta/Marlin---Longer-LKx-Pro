@@ -98,7 +98,7 @@
 //#define LK5_Pro //  for LK5pro
 #define LKPro_BLTOUCH // for LK4 and LK5
 
-#define LKPro_FW_VERSION "G5"
+#define LKPro_FW_VERSION "GC 1.1"
 #define LCD_HEIGHT 4 // number of message lines in the wait screen
 //#define DEBUG_DGUSLCD
 //#define FILAMENT_RUNOUT_SENSOR_DEBUG
@@ -153,7 +153,13 @@
 //#define BLUETOOTH
 
 // Name displayed in the LCD "Ready" message and Info menu
-#define CUSTOM_MACHINE_NAME "LK4 Pro"
+#if defined(LK4_Pro)
+  #define CUSTOM_MACHINE_NAME "LK4 Pro"
+#elif defined(LK5_Pro)
+  #define CUSTOM_MACHINE_NAME "LK5 Pro"
+#else
+#define CUSTOM_MACHINE_NAME "Printer"
+#endif
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like https://www.uuidgenerator.net/version4
