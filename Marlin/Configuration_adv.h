@@ -30,7 +30,7 @@
  *
  * Basic settings can be found in Configuration.h
  */
-#define CONFIGURATION_ADV_H_VERSION 02000904
+#define CONFIGURATION_ADV_H_VERSION 02010000
 
   //===========================================================================
   //============================= Thermal Settings ============================
@@ -835,18 +835,12 @@
  * the position of the toolhead relative to the workspace.
  */
 
- //#define SENSORLESS_BACKOFF_MM  { 2, 2, 0 }  // (mm) Backoff from endstops before sensorless homing
+//#define SENSORLESS_BACKOFF_MM  { 2, 2, 0 }  // (linear=mm, rotational=°) Backoff from endstops before sensorless homing
 
-#define HOMING_BUMP_MM \
-    {                  \
-        5, 5, 2        \
-    } // (mm) Backoff from endstops after first bump
-#define HOMING_BUMP_DIVISOR \
-    {                       \
-        2, 2, 4             \
-    } // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#define HOMING_BUMP_MM      { 5, 5, 2 }       // (linear=mm, rotational=°) Backoff from endstops after first bump
+#define HOMING_BUMP_DIVISOR { 2, 2, 4 }       // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 
-//#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (mm) Backoff from endstops after homing
+//#define HOMING_BACKOFF_POST_MM { 2, 2, 2 }  // (linear=mm, rotational=°) Backoff from endstops after homing
 
 //#define QUICK_HOME                          // If G28 contains XY do a diagonal move first
 //#define HOME_Y_BEFORE_X                     // If G28 contains XY home Y before X
@@ -1042,6 +1036,9 @@
 #define INVERT_I_STEP_PIN false
 #define INVERT_J_STEP_PIN false
 #define INVERT_K_STEP_PIN false
+#define INVERT_U_STEP_PIN false
+#define INVERT_V_STEP_PIN false
+#define INVERT_W_STEP_PIN false
 #define INVERT_E_STEP_PIN false
 
 /**
@@ -1056,11 +1053,14 @@
 #define DISABLE_INACTIVE_I true
 #define DISABLE_INACTIVE_J true
 #define DISABLE_INACTIVE_K true
+#define DISABLE_INACTIVE_U true
+#define DISABLE_INACTIVE_V true
+#define DISABLE_INACTIVE_W true
 #define DISABLE_INACTIVE_E true
 
- // Default Minimum Feedrates for printing and travel moves
-#define DEFAULT_MINIMUMFEEDRATE 0.0   // (mm/s) Minimum feedrate. Set with M205 S.
-#define DEFAULT_MINTRAVELFEEDRATE 0.0 // (mm/s) Minimum travel feedrate. Set with M205 T.
+// Default Minimum Feedrates for printing and travel moves
+#define DEFAULT_MINIMUMFEEDRATE       0.0     // (mm/s. °/s for rotational-only moves) Minimum feedrate. Set with M205 S.
+#define DEFAULT_MINTRAVELFEEDRATE     0.0     // (mm/s. °/s for rotational-only moves) Minimum travel feedrate. Set with M205 T.
 
 // Minimum time that a segment needs to take as the buffer gets emptied
 #define DEFAULT_MINSEGMENTTIME 20000 // (µs) Set with M205 B.
@@ -1094,37 +1094,34 @@
 //
 //#define BACKLASH_COMPENSATION
 #if ENABLED(BACKLASH_COMPENSATION)
-// Define values for backlash distance and correction.
-// If BACKLASH_GCODE is enabled these values are the defaults.
-#define BACKLASH_DISTANCE_MM \
-    {                        \
-        0, 0, 0              \
-    }                           // (mm) One value for each linear axis
-#define BACKLASH_CORRECTION 0.0 // 0.0 = no correction; 1.0 = full correction
+  // Define values for backlash distance and correction.
+  // If BACKLASH_GCODE is enabled these values are the defaults.
+  #define BACKLASH_DISTANCE_MM { 0, 0, 0 } // (linear=mm, rotational=°) One value for each linear axis
+  #define BACKLASH_CORRECTION    0.0       // 0.0 = no correction; 1.0 = full correction
 
-// Add steps for motor direction changes on CORE kinematics
-//#define CORE_BACKLASH
+  // Add steps for motor direction changes on CORE kinematics
+  //#define CORE_BACKLASH
 
-// Set BACKLASH_SMOOTHING_MM to spread backlash correction over multiple segments
-// to reduce print artifacts. (Enabling this is costly in memory and computation!)
-//#define BACKLASH_SMOOTHING_MM 3 // (mm)
+  // Set BACKLASH_SMOOTHING_MM to spread backlash correction over multiple segments
+  // to reduce print artifacts. (Enabling this is costly in memory and computation!)
+  //#define BACKLASH_SMOOTHING_MM 3 // (mm)
 
-// Add runtime configuration and tuning of backlash values (M425)
-//#define BACKLASH_GCODE
+  // Add runtime configuration and tuning of backlash values (M425)
+  //#define BACKLASH_GCODE
 
-#if ENABLED(BACKLASH_GCODE)
-// Measure the Z backlash when probing (G29) and set with "M425 Z"
-#define MEASURE_BACKLASH_WHEN_PROBING
+  #if ENABLED(BACKLASH_GCODE)
+    // Measure the Z backlash when probing (G29) and set with "M425 Z"
+    #define MEASURE_BACKLASH_WHEN_PROBING
 
-#if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
-// When measuring, the probe will move up to BACKLASH_MEASUREMENT_LIMIT
-// mm away from point of contact in BACKLASH_MEASUREMENT_RESOLUTION
-// increments while checking for the contact to be broken.
-#define BACKLASH_MEASUREMENT_LIMIT 0.5                      // (mm)
-#define BACKLASH_MEASUREMENT_RESOLUTION 0.005               // (mm)
-#define BACKLASH_MEASUREMENT_FEEDRATE Z_PROBE_FEEDRATE_SLOW // (mm/min)
-#endif
-#endif
+    #if ENABLED(MEASURE_BACKLASH_WHEN_PROBING)
+      // When measuring, the probe will move up to BACKLASH_MEASUREMENT_LIMIT
+      // mm away from point of contact in BACKLASH_MEASUREMENT_RESOLUTION
+      // increments while checking for the contact to be broken.
+      #define BACKLASH_MEASUREMENT_LIMIT       0.5   // (mm)
+      #define BACKLASH_MEASUREMENT_RESOLUTION  0.005 // (mm)
+      #define BACKLASH_MEASUREMENT_FEEDRATE    Z_PROBE_FEEDRATE_SLOW // (mm/min)
+    #endif
+  #endif
 #endif
 
 /**
@@ -1143,57 +1140,57 @@
  //#define CALIBRATION_GCODE
 #if ENABLED(CALIBRATION_GCODE)
 
-//#define CALIBRATION_SCRIPT_PRE  "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating..."
-//#define CALIBRATION_SCRIPT_POST "M500\nM117 Calibration data saved"
+  //#define CALIBRATION_SCRIPT_PRE  "M117 Starting Auto-Calibration\nT0\nG28\nG12\nM117 Calibrating..."
+  //#define CALIBRATION_SCRIPT_POST "M500\nM117 Calibration data saved"
 
-#define CALIBRATION_MEASUREMENT_RESOLUTION 0.01 // mm
+  #define CALIBRATION_MEASUREMENT_RESOLUTION     0.01 // mm
 
-#define CALIBRATION_FEEDRATE_SLOW 60     // mm/min
-#define CALIBRATION_FEEDRATE_FAST 1200   // mm/min
-#define CALIBRATION_FEEDRATE_TRAVEL 3000 // mm/min
+  #define CALIBRATION_FEEDRATE_SLOW             60    // mm/min
+  #define CALIBRATION_FEEDRATE_FAST           1200    // mm/min
+  #define CALIBRATION_FEEDRATE_TRAVEL         3000    // mm/min
 
-// The following parameters refer to the conical section of the nozzle tip.
-#define CALIBRATION_NOZZLE_TIP_HEIGHT 1.0     // mm
-#define CALIBRATION_NOZZLE_OUTER_DIAMETER 2.0 // mm
+  // The following parameters refer to the conical section of the nozzle tip.
+  #define CALIBRATION_NOZZLE_TIP_HEIGHT          1.0  // mm
+  #define CALIBRATION_NOZZLE_OUTER_DIAMETER      2.0  // mm
 
-// Uncomment to enable reporting (required for "G425 V", but consumes PROGMEM).
-//#define CALIBRATION_REPORTING
+  // Uncomment to enable reporting (required for "G425 V", but consumes PROGMEM).
+  //#define CALIBRATION_REPORTING
 
-// The true location and dimension the cube/bolt/washer on the bed.
-#define CALIBRATION_OBJECT_CENTER \
-    {                             \
-        264.0, -22.0, -2.0        \
-    } // mm
-#define CALIBRATION_OBJECT_DIMENSIONS \
-    {                                 \
-        10.0, 10.0, 10.0              \
-    } // mm
+  // The true location and dimension the cube/bolt/washer on the bed.
+  #define CALIBRATION_OBJECT_CENTER     { 264.0, -22.0,  -2.0 } // mm
+  #define CALIBRATION_OBJECT_DIMENSIONS {  10.0,  10.0,  10.0 } // mm
 
-// Comment out any sides which are unreachable by the probe. For best
-// auto-calibration results, all sides must be reachable.
-#define CALIBRATION_MEASURE_RIGHT
-#define CALIBRATION_MEASURE_FRONT
-#define CALIBRATION_MEASURE_LEFT
-#define CALIBRATION_MEASURE_BACK
+  // Comment out any sides which are unreachable by the probe. For best
+  // auto-calibration results, all sides must be reachable.
+  #define CALIBRATION_MEASURE_RIGHT
+  #define CALIBRATION_MEASURE_FRONT
+  #define CALIBRATION_MEASURE_LEFT
+  #define CALIBRATION_MEASURE_BACK
 
-//#define CALIBRATION_MEASURE_IMIN
-//#define CALIBRATION_MEASURE_IMAX
-//#define CALIBRATION_MEASURE_JMIN
-//#define CALIBRATION_MEASURE_JMAX
-//#define CALIBRATION_MEASURE_KMIN
-//#define CALIBRATION_MEASURE_KMAX
+  //#define CALIBRATION_MEASURE_IMIN
+  //#define CALIBRATION_MEASURE_IMAX
+  //#define CALIBRATION_MEASURE_JMIN
+  //#define CALIBRATION_MEASURE_JMAX
+  //#define CALIBRATION_MEASURE_KMIN
+  //#define CALIBRATION_MEASURE_KMAX
+  //#define CALIBRATION_MEASURE_UMIN
+  //#define CALIBRATION_MEASURE_UMAX
+  //#define CALIBRATION_MEASURE_VMIN
+  //#define CALIBRATION_MEASURE_VMAX
+  //#define CALIBRATION_MEASURE_WMIN
+  //#define CALIBRATION_MEASURE_WMAX
 
-// Probing at the exact top center only works if the center is flat. If
-// probing on a screwhead or hollow washer, probe near the edges.
-//#define CALIBRATION_MEASURE_AT_TOP_EDGES
+  // Probing at the exact top center only works if the center is flat. If
+  // probing on a screwhead or hollow washer, probe near the edges.
+  //#define CALIBRATION_MEASURE_AT_TOP_EDGES
 
-// Define the pin to read during calibration
-#ifndef CALIBRATION_PIN
-//#define CALIBRATION_PIN -1            // Define here to override the default pin
-#define CALIBRATION_PIN_INVERTING false // Set to true to invert the custom pin
-//#define CALIBRATION_PIN_PULLDOWN
-#define CALIBRATION_PIN_PULLUP
-#endif
+  // Define the pin to read during calibration
+  #ifndef CALIBRATION_PIN
+    //#define CALIBRATION_PIN -1            // Define here to override the default pin
+    #define CALIBRATION_PIN_INVERTING false // Set to true to invert the custom pin
+    //#define CALIBRATION_PIN_PULLDOWN
+    #define CALIBRATION_PIN_PULLUP
+  #endif
 #endif
 
 /**
@@ -2059,6 +2056,21 @@
 // @section leveling
 
 /**
+ * Use Safe Bed Leveling coordinates to move axes to a useful position before bed probing.
+ * For example, after homing a rotational axis the Z probe might not be perpendicular to the bed.
+ * Choose values the orient the bed horizontally and the Z-probe vertically.
+ */
+//#define SAFE_BED_LEVELING_START_X 0.0
+//#define SAFE_BED_LEVELING_START_Y 0.0
+//#define SAFE_BED_LEVELING_START_Z 0.0
+//#define SAFE_BED_LEVELING_START_I 0.0
+//#define SAFE_BED_LEVELING_START_J 0.0
+//#define SAFE_BED_LEVELING_START_K 0.0
+//#define SAFE_BED_LEVELING_START_U 0.0
+//#define SAFE_BED_LEVELING_START_V 0.0
+//#define SAFE_BED_LEVELING_START_W 0.0
+
+/**
  * Points to probe for all 3-point Leveling procedures.
  * Override if the automatically selected points are inadequate.
  */
@@ -2679,11 +2691,29 @@
 #define K_MICROSTEPS 16
 #endif
 
-#if AXIS_DRIVER_TYPE_E0(TMC26X)
-#define E0_MAX_CURRENT 1000
-#define E0_SENSE_RESISTOR 91
-#define E0_MICROSTEPS 16
-#endif
+  #if AXIS_DRIVER_TYPE_U(TMC26X)
+    #define U_MAX_CURRENT    1000
+    #define U_SENSE_RESISTOR   91
+    #define U_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_V(TMC26X)
+    #define V_MAX_CURRENT    1000
+    #define V_SENSE_RESISTOR   91
+    #define V_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_W(TMC26X)
+    #define W_MAX_CURRENT    1000
+    #define W_SENSE_RESISTOR   91
+    #define W_MICROSTEPS       16
+  #endif
+
+  #if AXIS_DRIVER_TYPE_E0(TMC26X)
+    #define E0_MAX_CURRENT    1000
+    #define E0_SENSE_RESISTOR   91
+    #define E0_MICROSTEPS       16
+  #endif
 
 #if AXIS_DRIVER_TYPE_E1(TMC26X)
 #define E1_MAX_CURRENT 1000
@@ -2867,6 +2897,36 @@
     //#define K_HOLD_MULTIPLIER 0.5
   #endif
 
+  #if AXIS_IS_TMC(U)
+    #define U_CURRENT      800
+    #define U_CURRENT_HOME U_CURRENT
+    #define U_MICROSTEPS     8
+    #define U_RSENSE         0.11
+    #define U_CHAIN_POS     -1
+    //#define U_INTERPOLATE  true
+    //#define U_HOLD_MULTIPLIER 0.5
+  #endif
+
+  #if AXIS_IS_TMC(V)
+    #define V_CURRENT      800
+    #define V_CURRENT_HOME V_CURRENT
+    #define V_MICROSTEPS     8
+    #define V_RSENSE         0.11
+    #define V_CHAIN_POS     -1
+    //#define V_INTERPOLATE  true
+    //#define V_HOLD_MULTIPLIER 0.5
+  #endif
+
+  #if AXIS_IS_TMC(W)
+    #define W_CURRENT      800
+    #define W_CURRENT_HOME W_CURRENT
+    #define W_MICROSTEPS     8
+    #define W_RSENSE         0.11
+    #define W_CHAIN_POS     -1
+    //#define W_INTERPOLATE  true
+    //#define W_HOLD_MULTIPLIER 0.5
+  #endif
+
   #if AXIS_IS_TMC(E0)
     #define E0_CURRENT      800
     #define E0_MICROSTEPS    16
@@ -2939,14 +2999,32 @@
     //#define E7_HOLD_MULTIPLIER 0.5
   #endif
 
-#if AXIS_IS_TMC(X2)
-#define X2_CURRENT 800
-#define X2_CURRENT_HOME X2_CURRENT
-#define X2_MICROSTEPS X_MICROSTEPS
-#define X2_RSENSE 0.11
-#define X2_CHAIN_POS -1
-//#define X2_INTERPOLATE true
-#endif
+  /**
+   * Override default SPI pins for TMC2130, TMC2160, TMC2660, TMC5130 and TMC5160 drivers here.
+   * The default pins can be found in your board's pins file.
+   */
+  //#define X_CS_PIN          -1
+  //#define Y_CS_PIN          -1
+  //#define Z_CS_PIN          -1
+  //#define X2_CS_PIN         -1
+  //#define Y2_CS_PIN         -1
+  //#define Z2_CS_PIN         -1
+  //#define Z3_CS_PIN         -1
+  //#define Z4_CS_PIN         -1
+  //#define I_CS_PIN          -1
+  //#define J_CS_PIN          -1
+  //#define K_CS_PIN          -1
+  //#define U_CS_PIN          -1
+  //#define V_CS_PIN          -1
+  //#define W_CS_PIN          -1
+  //#define E0_CS_PIN         -1
+  //#define E1_CS_PIN         -1
+  //#define E2_CS_PIN         -1
+  //#define E3_CS_PIN         -1
+  //#define E4_CS_PIN         -1
+  //#define E5_CS_PIN         -1
+  //#define E6_CS_PIN         -1
+  //#define E7_CS_PIN         -1
 
 #if AXIS_IS_TMC(Y)
 #define Y_CURRENT 800
@@ -2957,14 +3035,40 @@
 //#define Y_INTERPOLATE  true
 #endif
 
-#if AXIS_IS_TMC(Y2)
-#define Y2_CURRENT 800
-#define Y2_CURRENT_HOME Y2_CURRENT
-#define Y2_MICROSTEPS Y_MICROSTEPS
-#define Y2_RSENSE 0.11
-#define Y2_CHAIN_POS -1
-//#define Y2_INTERPOLATE true
-#endif
+  /**
+   * Four TMC2209 drivers can use the same HW/SW serial port with hardware configured addresses.
+   * Set the address using jumpers on pins MS1 and MS2.
+   * Address | MS1  | MS2
+   *       0 | LOW  | LOW
+   *       1 | HIGH | LOW
+   *       2 | LOW  | HIGH
+   *       3 | HIGH | HIGH
+   *
+   * Set *_SERIAL_TX_PIN and *_SERIAL_RX_PIN to match for all drivers
+   * on the same serial port, either here or in your board's pins file.
+   */
+  //#define  X_SLAVE_ADDRESS 0
+  //#define  Y_SLAVE_ADDRESS 0
+  //#define  Z_SLAVE_ADDRESS 0
+  //#define X2_SLAVE_ADDRESS 0
+  //#define Y2_SLAVE_ADDRESS 0
+  //#define Z2_SLAVE_ADDRESS 0
+  //#define Z3_SLAVE_ADDRESS 0
+  //#define Z4_SLAVE_ADDRESS 0
+  //#define  I_SLAVE_ADDRESS 0
+  //#define  J_SLAVE_ADDRESS 0
+  //#define  K_SLAVE_ADDRESS 0
+  //#define  U_SLAVE_ADDRESS 0
+  //#define  V_SLAVE_ADDRESS 0
+  //#define  W_SLAVE_ADDRESS 0
+  //#define E0_SLAVE_ADDRESS 0
+  //#define E1_SLAVE_ADDRESS 0
+  //#define E2_SLAVE_ADDRESS 0
+  //#define E3_SLAVE_ADDRESS 0
+  //#define E4_SLAVE_ADDRESS 0
+  //#define E5_SLAVE_ADDRESS 0
+  //#define E6_SLAVE_ADDRESS 0
+  //#define E7_SLAVE_ADDRESS 0
 
 #if AXIS_IS_TMC(Z)
 #define Z_CURRENT 800
@@ -2975,14 +3079,20 @@
 //#define Z_INTERPOLATE  true
 #endif
 
-#if AXIS_IS_TMC(Z2)
-#define Z2_CURRENT 800
-#define Z2_CURRENT_HOME Z2_CURRENT
-#define Z2_MICROSTEPS Z_MICROSTEPS
-#define Z2_RSENSE 0.11
-#define Z2_CHAIN_POS -1
-//#define Z2_INTERPOLATE true
-#endif
+  /**
+   * TMC2130, TMC2160, TMC2208, TMC2209, TMC5130 and TMC5160 only
+   * Use Trinamic's ultra quiet stepping mode.
+   * When disabled, Marlin will use spreadCycle stepping mode.
+   */
+  #define STEALTHCHOP_XY
+  #define STEALTHCHOP_Z
+  #define STEALTHCHOP_I
+  #define STEALTHCHOP_J
+  #define STEALTHCHOP_K
+  #define STEALTHCHOP_U
+  #define STEALTHCHOP_V
+  #define STEALTHCHOP_W
+  #define STEALTHCHOP_E
 
   /**
    * Optimize spreadCycle chopper parameters by using predefined parameter sets
@@ -3008,9 +3118,12 @@
   //#define CHOPPER_TIMING_Z2 CHOPPER_TIMING_Z
   //#define CHOPPER_TIMING_Z3 CHOPPER_TIMING_Z
   //#define CHOPPER_TIMING_Z4 CHOPPER_TIMING_Z
-  //#define CHOPPER_TIMING_I  CHOPPER_TIMING
-  //#define CHOPPER_TIMING_J  CHOPPER_TIMING
-  //#define CHOPPER_TIMING_K  CHOPPER_TIMING
+  //#define CHOPPER_TIMING_I  CHOPPER_TIMING        // For I Axis
+  //#define CHOPPER_TIMING_J  CHOPPER_TIMING        // For J Axis
+  //#define CHOPPER_TIMING_K  CHOPPER_TIMING        // For K Axis
+  //#define CHOPPER_TIMING_U  CHOPPER_TIMING        // For U Axis
+  //#define CHOPPER_TIMING_V  CHOPPER_TIMING        // For V Axis
+  //#define CHOPPER_TIMING_W  CHOPPER_TIMING        // For W Axis
   //#define CHOPPER_TIMING_E  CHOPPER_TIMING        // For Extruders (override below)
   //#define CHOPPER_TIMING_E1 CHOPPER_TIMING_E
   //#define CHOPPER_TIMING_E2 CHOPPER_TIMING_E
@@ -3265,27 +3378,30 @@
    * STEALTHCHOP_(XY|Z|E) must be enabled to use HYBRID_THRESHOLD.
    * M913 X/Y/Z/E to live tune the setting
    */
-   //#define HYBRID_THRESHOLD
+  //#define HYBRID_THRESHOLD
 
-#define X_HYBRID_THRESHOLD 100 // [mm/s]
-#define X2_HYBRID_THRESHOLD 100
-#define Y_HYBRID_THRESHOLD 100
-#define Y2_HYBRID_THRESHOLD 100
-#define Z_HYBRID_THRESHOLD 3
-#define Z2_HYBRID_THRESHOLD 3
-#define Z3_HYBRID_THRESHOLD 3
-#define Z4_HYBRID_THRESHOLD 3
-#define I_HYBRID_THRESHOLD 3
-#define J_HYBRID_THRESHOLD 3
-#define K_HYBRID_THRESHOLD 3
-#define E0_HYBRID_THRESHOLD 30
-#define E1_HYBRID_THRESHOLD 30
-#define E2_HYBRID_THRESHOLD 30
-#define E3_HYBRID_THRESHOLD 30
-#define E4_HYBRID_THRESHOLD 30
-#define E5_HYBRID_THRESHOLD 30
-#define E6_HYBRID_THRESHOLD 30
-#define E7_HYBRID_THRESHOLD 30
+  #define X_HYBRID_THRESHOLD     100  // [mm/s]
+  #define X2_HYBRID_THRESHOLD    100
+  #define Y_HYBRID_THRESHOLD     100
+  #define Y2_HYBRID_THRESHOLD    100
+  #define Z_HYBRID_THRESHOLD       3
+  #define Z2_HYBRID_THRESHOLD      3
+  #define Z3_HYBRID_THRESHOLD      3
+  #define Z4_HYBRID_THRESHOLD      3
+  #define I_HYBRID_THRESHOLD       3  // [linear=mm/s, rotational=°/s]
+  #define J_HYBRID_THRESHOLD       3  // [linear=mm/s, rotational=°/s]
+  #define K_HYBRID_THRESHOLD       3  // [linear=mm/s, rotational=°/s]
+  #define U_HYBRID_THRESHOLD       3  // [mm/s]
+  #define V_HYBRID_THRESHOLD       3
+  #define W_HYBRID_THRESHOLD       3
+  #define E0_HYBRID_THRESHOLD     30
+  #define E1_HYBRID_THRESHOLD     30
+  #define E2_HYBRID_THRESHOLD     30
+  #define E3_HYBRID_THRESHOLD     30
+  #define E4_HYBRID_THRESHOLD     30
+  #define E5_HYBRID_THRESHOLD     30
+  #define E6_HYBRID_THRESHOLD     30
+  #define E7_HYBRID_THRESHOLD     30
 
 /**
    * Use StallGuard to home / probe X, Y, Z.
@@ -3312,24 +3428,27 @@
    *
    * Comment *_STALL_SENSITIVITY to disable sensorless homing for that axis.
    */
-   //#define SENSORLESS_HOMING // StallGuard capable drivers only
+  //#define SENSORLESS_HOMING // StallGuard capable drivers only
 
-#if EITHER(SENSORLESS_HOMING, SENSORLESS_PROBING)
-// TMC2209: 0...255. TMC2130: -64...63
-#define X_STALL_SENSITIVITY 8
-#define X2_STALL_SENSITIVITY X_STALL_SENSITIVITY
-#define Y_STALL_SENSITIVITY 8
-#define Y2_STALL_SENSITIVITY Y_STALL_SENSITIVITY
-//#define Z_STALL_SENSITIVITY  8
-//#define Z2_STALL_SENSITIVITY Z_STALL_SENSITIVITY
-//#define Z3_STALL_SENSITIVITY Z_STALL_SENSITIVITY
-//#define Z4_STALL_SENSITIVITY Z_STALL_SENSITIVITY
-//#define I_STALL_SENSITIVITY  8
-//#define J_STALL_SENSITIVITY  8
-//#define K_STALL_SENSITIVITY  8
-//#define SPI_ENDSTOPS              // TMC2130 only
-//#define IMPROVE_HOMING_RELIABILITY
-#endif
+  #if EITHER(SENSORLESS_HOMING, SENSORLESS_PROBING)
+    // TMC2209: 0...255. TMC2130: -64...63
+    #define X_STALL_SENSITIVITY  8
+    #define X2_STALL_SENSITIVITY X_STALL_SENSITIVITY
+    #define Y_STALL_SENSITIVITY  8
+    #define Y2_STALL_SENSITIVITY Y_STALL_SENSITIVITY
+    //#define Z_STALL_SENSITIVITY  8
+    //#define Z2_STALL_SENSITIVITY Z_STALL_SENSITIVITY
+    //#define Z3_STALL_SENSITIVITY Z_STALL_SENSITIVITY
+    //#define Z4_STALL_SENSITIVITY Z_STALL_SENSITIVITY
+    //#define I_STALL_SENSITIVITY  8
+    //#define J_STALL_SENSITIVITY  8
+    //#define K_STALL_SENSITIVITY  8
+    //#define U_STALL_SENSITIVITY  8
+    //#define V_STALL_SENSITIVITY  8
+    //#define W_STALL_SENSITIVITY  8
+    //#define SPI_ENDSTOPS              // TMC2130 only
+    //#define IMPROVE_HOMING_RELIABILITY
+  #endif
 
 /**
    * TMC Homing stepper phase.
@@ -3496,14 +3615,41 @@
     #define K_SLEW_RATE         1
   #endif
 
-#if AXIS_IS_L64XX(E0)
-#define E0_MICROSTEPS 128
-#define E0_OVERCURRENT 2000
-#define E0_STALLCURRENT 1500
-#define E0_MAX_VOLTAGE 127
-#define E0_CHAIN_POS -1
-#define E0_SLEW_RATE 1
-#endif
+  #if AXIS_IS_L64XX(U)
+    #define U_MICROSTEPS      128
+    #define U_OVERCURRENT    2000
+    #define U_STALLCURRENT   1500
+    #define U_MAX_VOLTAGE     127
+    #define U_CHAIN_POS        -1
+    #define U_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(V)
+    #define V_MICROSTEPS      128
+    #define V_OVERCURRENT    2000
+    #define V_STALLCURRENT   1500
+    #define V_MAX_VOLTAGE     127
+    #define V_CHAIN_POS        -1
+    #define V_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(W)
+    #define W_MICROSTEPS      128
+    #define W_OVERCURRENT    2000
+    #define W_STALLCURRENT   1500
+    #define W_MAX_VOLTAGE     127
+    #define W_CHAIN_POS        -1
+    #define W_SLEW_RATE         1
+  #endif
+
+  #if AXIS_IS_L64XX(E0)
+    #define E0_MICROSTEPS              128
+    #define E0_OVERCURRENT            2000
+    #define E0_STALLCURRENT           1500
+    #define E0_MAX_VOLTAGE             127
+    #define E0_CHAIN_POS                -1
+    #define E0_SLEW_RATE                 1
+  #endif
 
 #if AXIS_IS_L64XX(E1)
 #define E1_MICROSTEPS E0_MICROSTEPS
@@ -3701,6 +3847,9 @@
   #if ENABLED(SPINDLE_LASER_USE_PWM)
     #define SPINDLE_LASER_PWM_INVERT    false  // Set to "true" if the speed/power goes up when you want it to go slower
     #define SPINDLE_LASER_FREQUENCY     2500   // (Hz) Spindle/laser frequency (only on supported HALs: AVR, ESP32, and LPC)
+                                               // ESP32: If SPINDLE_LASER_PWM_PIN is onboard then <=78125Hz. For I2S expander
+                                               //  the frequency determines the PWM resolution. 2500Hz = 0-100, 977Hz = 0-255, ...
+                                               //  (250000 / SPINDLE_LASER_FREQUENCY) = max value.
   #endif
 
 //#define AIR_EVACUATION                     // Cutter Vacuum / Laser Blower motor control with G-codes M10-M11
@@ -4395,29 +4544,33 @@
  */
  //#define MAX7219_DEBUG
 #if ENABLED(MAX7219_DEBUG)
-#define MAX7219_CLK_PIN 64
-#define MAX7219_DIN_PIN 57
-#define MAX7219_LOAD_PIN 44
+  #define MAX7219_CLK_PIN   64
+  #define MAX7219_DIN_PIN   57
+  #define MAX7219_LOAD_PIN  44
 
-//#define MAX7219_GCODE          // Add the M7219 G-code to control the LED matrix
-#define MAX7219_INIT_TEST 2    // Test pattern at startup: 0=none, 1=sweep, 2=spiral
-#define MAX7219_NUMBER_UNITS 1 // Number of Max7219 units in chain.
-#define MAX7219_ROTATE 0       // Rotate the display clockwise (in multiples of +/- 90°) 
-                               // connector at:  right=0   bottom=-90  top=90  left=180
-//#define MAX7219_REVERSE_ORDER  // The individual LED matrix units may be in reversed order
-//#define MAX7219_SIDE_BY_SIDE   // Big chip+matrix boards can be chained side-by-side
+  //#define MAX7219_GCODE          // Add the M7219 G-code to control the LED matrix
+  #define MAX7219_INIT_TEST    2   // Test pattern at startup: 0=none, 1=sweep, 2=spiral
+  #define MAX7219_NUMBER_UNITS 1   // Number of Max7219 units in chain.
+  #define MAX7219_ROTATE       0   // Rotate the display clockwise (in multiples of +/- 90°)
+                                   // connector at:  right=0   bottom=-90  top=90  left=180
+  //#define MAX7219_REVERSE_ORDER  // The order of the LED matrix units may be reversed
+  //#define MAX7219_REVERSE_EACH   // The LEDs in each matrix unit row may be reversed
+  //#define MAX7219_SIDE_BY_SIDE   // Big chip+matrix boards can be chained side-by-side
 
 /**
    * Sample debug features
    * If you add more debug displays, be careful to avoid conflicts!
    */
-#define MAX7219_DEBUG_PRINTER_ALIVE  // Blink corner LED of 8x8 matrix to show that the firmware is functioning
-#define MAX7219_DEBUG_PLANNER_HEAD 3 // Show the planner queue head position on this and the next LED matrix row
-#define MAX7219_DEBUG_PLANNER_TAIL 5 // Show the planner queue tail position on this and the next LED matrix row
+  #define MAX7219_DEBUG_PRINTER_ALIVE    // Blink corner LED of 8x8 matrix to show that the firmware is functioning
+  #define MAX7219_DEBUG_PLANNER_HEAD  2  // Show the planner queue head position on this and the next LED matrix row
+  #define MAX7219_DEBUG_PLANNER_TAIL  4  // Show the planner queue tail position on this and the next LED matrix row
 
-#define MAX7219_DEBUG_PLANNER_QUEUE 0 // Show the current planner queue depth on this and the next LED matrix row 
-                                      // If you experience stuttering, reboots, etc. this option can reveal how   
-                                      // tweaks made to the configuration are affecting the printer in real-time.
+  #define MAX7219_DEBUG_PLANNER_QUEUE 0  // Show the current planner queue depth on this and the next LED matrix row
+                                         // If you experience stuttering, reboots, etc. this option can reveal how
+                                         // tweaks made to the configuration are affecting the printer in real-time.
+  #define MAX7219_DEBUG_PROFILE       6  // Display the fraction of CPU time spent in profiled code on this LED matrix
+                                         // row. By default idle() is profiled so this shows how "idle" the processor is.
+                                         // See class CodeProfiler.
 #endif
 
    /**
