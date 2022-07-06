@@ -98,7 +98,7 @@
 //#define LK5_Pro //  for LK5pro
 #define LKPro_BLTOUCH // for LK4 and LK5
 
-#define LKPro_FW_VERSION "GC 1.1"
+#define LKPro_FW_VERSION "GC 1.2"
 #define LCD_HEIGHT 4 // number of message lines in the wait screen
 //#define DEBUG_DGUSLCD
 //#define FILAMENT_RUNOUT_SENSOR_DEBUG
