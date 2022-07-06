@@ -115,7 +115,6 @@ namespace ExtUI {
     void onLevelingStart() {}
     void onLevelingDone() {}
 
-#if HAS_MESH
     void onMeshLevelingStart()
     {
     }
