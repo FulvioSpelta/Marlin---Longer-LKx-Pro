@@ -1,6 +1,33 @@
-# Marlin 2.0 Printer Firmware For Longer LK4/LK5 Pro and Alfawise U30 Pro.
+# Marlin 2.1 Printer Firmware For Longer LK4/LK5 Pro and Alfawise U30 Pro.
 
-**IMPORTANT!! This firmware will not work on touch screens other than model DW. In the About, the screen firmware version may have letters following it like "0.3.1 DW". This firmware will work only if your screen has the letters DW or no letters following the version number.
+**IMPORTANT!!** This firmware will not work on touch screens other than model DW. In the About, the screen firmware version may have letters following it like "0.3.1-DW". This firmware will only work if your screen has the letters DW or no letters following the version number.
+
+**Do not try to update if your touch screen model is "T5L", "DWTJ" or "DWTJB".** 
+
+Update instructions provided by jgbrown54:
+1. Download the appropriate Marlin hex file for your system configuration as well as the DWIN_SET from the release page.
+2. Download and install the Longer slicer from Longer's official web site or provided [here](https://onedrive.live.com/?authkey=%21AOBMazQNwWoTAuQ&id=3BFF2E2DC1E8717D%2129166&cid=3BFF2E2DC1E8717D) as a convenience.
+3. Connect a USB cable from your computer to the printer.
+4. Open the Longer slicer and select Machine / Machine Settings.
+5. Open the Serial Port selection and select the serial port for the printer. If there is no port available under the selection, then you must troubleshoot your USB connection before proceeding.
+6. If a port was selected, set the Baud Rate to Auto. Note that the baud rate may change after installation. You will need to account for this in any control software you are using. The new baud rate is 115200.
+7. Select the OK button to save the settings.
+8. On Longer Slicer, select Machine / Install Custom Firmware.
+9. Locate the new firmware .hex file. The firmware should update. If it does not update, do not proceed.
+10. Now use a Micro SD card between 8 and 32 GB and format it for FAT32 with a Utilization of 4096 KB. The The display will not recognize and SDHC card greater than 32GB. If you are running Windows Home Edition, it will not have a Utilization of 4096 KB availabile. In this case open a Command Prompt on the PC and enter the following command. FORMAT D: /FS:FAT32 /Q /A:4096 where D: is the drive letter assigned to your SD card. This format must be used to update the screen software.
+11. Extract the DWIN_SET folder from the .zip file and copy it to the formatted SD card.
+12. Open the frame around the display screen and place the SD card into the SD slot for the screen.
+13. Disconnect the USB cable from the computer before proceeding.
+14. Power on the printer and the screen software should update. It takes about 1 minute. When complete, the first displayed line will say "SD Card Process... END !".
+15. Remove the SD card and cycle the power on the printer. The printer should come up.
+
+Notes: 
+
+The new screens will not work with the old software. You MUST either have the new firmware and new screens or the old firmware and old screens. Load the Firmware first. Then the screen software. Steps 4 thru 9 can be done using the Prusa slicer, Cura, Octoprint, Repetier Server, Arduino, Avrdude, or any other firmware updater for Arduino. Follow instructions. In step 10, the SD card MUST be formatted as FAT32 with a Utilization of 4096 KB. The screen will not update unless this format is used. Warning! Loading this new firmware will reset your print counts.
+
+The default probe offset is set to an X offset of -35. This is correct if you have a single blower. If your unit has a dual blower, go to the Gcode entry screen and enter the commands M851 X-50 to set the X probe offset and M500 to save the settings.
+
+If you have already loaded the display software and you are only updating the firmware, you can skip lines 10 thru 15.
 
 <h1 align="center">Marlin 3D Printer Firmware</h1>
 
@@ -34,14 +61,12 @@ Integrated all changes from https://github.com/Desuuuu/Marlin and https://github
 
 Releases will contain the touchscreen firmware that matches. If you want the source of the screen firmware you can find it here https://github.com/Guizz27/DWIN_LK4Pro.
 
-## Marlin 2.0
-
 ## Building Marlin 2.1
 
-To build Marlin 2.1 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino.cc/en/main/software) or [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide). Detailed build and install instructions are posted at:
+To build Marlin 2.1 you'll need [Arduino IDE 1.8.8 or newer](https://www.arduino.cc/en/main/software) or [PlatformIO](http://docs.platformio.org/en/latest/ide.html#platformio-ide).
 
-## Building and installing Marlin 2.0 for LKx Pro
-Baddflash wrote detailed instructions to build and install the printer firmware as well as the screen firmware which you also have to update.
+## Building and installing Marlin 2.1 for LKx Pro
+Baddflash wrote detailed instructions to build and install the printer firmware as well as the screen firmware which you also have to update. Instructions are for an older version, so you will need to adapt to this new 2.1 version.
 Please follow his instructions here: https://github.com/Baddflash/LK4-Pro-Firmware-Tutorial
 
 ### Supported Platforms
