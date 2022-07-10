@@ -253,6 +253,10 @@
 
       VP_HELPER(DGUS_Addr::LEVEL_AUTO_Grid, sizeof(int16_t) * DGUS_LEVEL_GRID_SIZE, VPFLAG_NONE, nullptr, nullptr, &DGUSTxHandler::ABLGrid),
       VP_HELPER(DGUS_Addr::SP_LEVEL_AUTO_Grid, 2, VPFLAG_NONE, nullptr, nullptr, &DGUSTxHandler::ABLGridColor),
+    #else
+      VP_HELPER_TX_AUTO(DGUS_Addr::LEVEL_OFFSET_Current,
+                          &DGUSScreenHandler::baby_offset,
+                          (&DGUSTxHandler::ExtraToFixedPoint<float, 2>)),
     #endif
 
     VP_HELPER_TX(DGUS_Addr::FILAMENT_ExtruderIcons, &DGUSTxHandler::FilamentIcons),

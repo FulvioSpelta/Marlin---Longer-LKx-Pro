@@ -324,11 +324,18 @@ void DGUSRxHandler::BabystepSet(DGUS_VP& vp, void* data_ptr) {
   const int16_t data = Swap16(*(int16_t*)data_ptr);
   const float offset = dgus_display.FromFixedPoint<int16_t, float, 2>(data);
 
+#if HAS_LEVELING
   const int16_t steps = ExtUI::mmToWholeSteps(offset - ExtUI::getZOffset_mm(), ExtUI::Z);
+#else
+  const int16_t steps = ExtUI::mmToWholeSteps(offset - dgus_screen_handler.baby_offset, ExtUI::Z);
+  dgus_screen_handler.baby_offset = offset;
+#endif
 
   ExtUI::smartAdjustAxis_steps(steps, ExtUI::Z, true);
 
+#if HAS_LEVELING
   dgus_screen_handler.TriggerEEPROMSave();
+#endif
   dgus_screen_handler.TriggerFullUpdate();
 }
 
@@ -343,15 +350,23 @@ void DGUSRxHandler::Babystep(DGUS_VP& vp, void* data_ptr) {
     return;
   case DGUS_Data::Adjust::INCREMENT:
     steps = ExtUI::mmToWholeSteps(DGUS_PRINT_BABYSTEP, ExtUI::Z);
+  #if !HAS_LEVELING
+    dgus_screen_handler.baby_offset += DGUS_PRINT_BABYSTEP;
+  #endif
     break;
   case DGUS_Data::Adjust::DECREMENT:
     steps = ExtUI::mmToWholeSteps(-DGUS_PRINT_BABYSTEP, ExtUI::Z);
+  #if !HAS_LEVELING
+    dgus_screen_handler.baby_offset -= DGUS_PRINT_BABYSTEP;
+  #endif
     break;
   }
 
   ExtUI::smartAdjustAxis_steps(steps, ExtUI::Z, true);
 
-  dgus_screen_handler.TriggerEEPROMSave();
+  #if HAS_LEVELING
+    dgus_screen_handler.TriggerEEPROMSave();
+  #endif
   dgus_screen_handler.TriggerFullUpdate();
 }
 

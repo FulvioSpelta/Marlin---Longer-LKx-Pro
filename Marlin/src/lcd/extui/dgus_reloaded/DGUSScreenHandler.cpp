@@ -46,6 +46,8 @@ DGUS_Data::StepSize DGUSScreenHandler::move_steps = DGUS_Data::StepSize::MM10;
 #if HAS_LEVELING
   uint16_t DGUSScreenHandler::probing_colors[] = { 0, 0 };
   float DGUSScreenHandler::probing_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y];
+#else
+  float DGUSScreenHandler::baby_offset = 0;
 #endif
 uint8_t DGUSScreenHandler::levelingPoint = 0;
 
@@ -343,6 +345,9 @@ void DGUSScreenHandler::MeshUpdate(const int8_t xpos, const int8_t ypos, const_f
 
 void DGUSScreenHandler::PrintTimerStarted() {
   TriggerScreenChange(DGUS_Screen::PRINT_STATUS);
+  #if !HAS_LEVELING  
+    baby_offset = 0;
+  #endif
 }
 
 void DGUSScreenHandler::PrintTimerPaused() {

@@ -101,10 +101,13 @@ public:
     static DGUS_Data::StepSize offset_steps;
     static DGUS_Data::StepSize move_steps;
 
- #if HAS_LEVELING
+  #if HAS_LEVELING
     static uint16_t probing_colors[2];
     static float probing_values[GRID_MAX_POINTS_X][GRID_MAX_POINTS_Y];
+  #else
+    static float baby_offset;
   #endif
+    
     static uint8_t levelingPoint;
 
     static DGUS_Data::Extruder filament_extruder;
