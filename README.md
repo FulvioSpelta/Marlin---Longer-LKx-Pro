@@ -14,18 +14,20 @@ Update instructions provided by jgbrown54:
 7. Select the OK button to save the settings.
 8. On Longer Slicer, select Machine / Install Custom Firmware.
 9. Locate the new firmware .hex file. The firmware should update. If it does not update, do not proceed.
-10. Now use a Micro SD card between 8 and 32 GB and format it for FAT32 with a Utilization of 4096 KB. The The display will not recognize and SDHC card greater than 32GB. If you are running Windows Home Edition, it will not have a Utilization of 4096 KB availabile. In this case open a Command Prompt on the PC and enter the following command. FORMAT D: /FS:FAT32 /Q /A:4096 where D: is the drive letter assigned to your SD card. This format must be used to update the screen software.
+10. Now use a Micro SD card between 8 and 32 GB and format it for FAT32 with a Utilization of 4096 KB. The The display will not recognize and SDHC card greater than 32GB. 
 11. Extract the DWIN_SET folder from the .zip file and copy it to the formatted SD card.
 12. Open the frame around the display screen and place the SD card into the SD slot for the screen.
 13. Disconnect the USB cable from the computer before proceeding.
 14. Power on the printer and the screen software should update. It takes about 1 minute. When complete, the first displayed line will say "SD Card Process... END !".
 15. Remove the SD card and cycle the power on the printer. The printer should come up.
 
-Notes: 
+**Notes:** 
+
+If you are running Windows Home Edition, it will not have a Utilization of 4096 KB availabile. In this case open a Command Prompt on the PC and enter the following command. FORMAT D: /FS:FAT32 /Q /A:4096 where D: is the drive letter assigned to your SD card. This format must be used to update the screen software.
 
 The new screens will not work with the old software. You MUST either have the new firmware and new screens or the old firmware and old screens. Load the Firmware first. Then the screen software. Steps 4 thru 9 can be done using the Prusa slicer, Cura, Octoprint, Repetier Server, Arduino, Avrdude, or any other firmware updater for Arduino. Follow instructions. In step 10, the SD card MUST be formatted as FAT32 with a Utilization of 4096 KB. The screen will not update unless this format is used. Warning! Loading this new firmware will reset your print counts.
 
-The default probe offset is set to an X offset of -35. This is correct if you have a single blower. If your unit has a dual blower, go to the Gcode entry screen and enter the commands M851 X-50 to set the X probe offset and M500 to save the settings.
+The default probe offset is set to an X offset of -32. This is correct if you have a single blower. If your unit has a dual blower, go to the Gcode entry screen and enter the commands M851 X-50 to set the X probe offset and M500 to save the settings.
 
 If you have already loaded the display software and you are only updating the firmware, you can skip lines 10 thru 15.
 
