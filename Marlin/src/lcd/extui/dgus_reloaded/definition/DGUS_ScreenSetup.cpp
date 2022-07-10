@@ -39,6 +39,7 @@
 const struct DGUS_ScreenSetup screen_setup_list[] PROGMEM = {
 #if ENABLED(SDSUPPORT)
     SETUP_HELPER(DGUS_Screen::PRINT, &DGUSSetupHandler::Print),
+    SETUP_HELPER(DGUS_Screen::HOME, &DGUSSetupHandler::ResetSelectedFile),
 #endif
     SETUP_HELPER(DGUS_Screen::PRINT_STATUS, &DGUSSetupHandler::PrintStatus),
     SETUP_HELPER(DGUS_Screen::PRINT_ADJUST, &DGUSSetupHandler::PrintAdjust),

@@ -48,6 +48,13 @@ bool DGUSSetupHandler::Print() {
 
     return true;
 }
+
+bool DGUSSetupHandler::ResetSelectedFile() {
+  dgus_screen_handler.filelist_offset = 0;
+  dgus_screen_handler.filelist_selected = -1;
+  return true;
+}
+
 #endif
 
 bool DGUSSetupHandler::PrintStatus() {
