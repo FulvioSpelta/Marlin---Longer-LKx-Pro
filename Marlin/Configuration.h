@@ -1320,7 +1320,10 @@
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
 #define PROBING_MARGIN 10
-
+#if ENABLED(LGT_MAC)
+  #define EQUAL_MARGIN_ALL_SIDES    // Adjusts the margin so the bed is probed at equal distance on all sides.
+                                    // It will not use a margin less than PROBING_MARGIN
+#endif
 // X and Y axis travel speed (mm/min) between probes
 #define XY_PROBE_FEEDRATE (133*60)
 
