@@ -4,9 +4,9 @@
 
 **Do not try to update if your touch screen model is "T5L", "DWTJ" or "DWTJB".** 
 
-Update instructions provided by jgbrown54:
+Here are brief installation instructions:
 1. Download the appropriate Marlin hex file for your system configuration as well as the DWIN_SET from the release page.
-2. Download and install the Longer slicer from Longer's official web site or provided [here](https://onedrive.live.com/?authkey=%21AOBMazQNwWoTAuQ&id=3BFF2E2DC1E8717D%2129166&cid=3BFF2E2DC1E8717D) as a convenience.
+2. Download and install the Longer slicer from Longer's official web site.
 3. Connect a USB cable from your computer to the printer.
 4. Open the Longer slicer and select Machine / Machine Settings.
 5. Open the Serial Port selection and select the serial port for the printer. If there is no port available under the selection, then you must troubleshoot your USB connection before proceeding.
