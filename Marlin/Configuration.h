@@ -96,7 +96,7 @@
 #define LGT_MAC //  For Alphawise and Longer U30 pro LK4 pro
 #define LK4_Pro //  for LK4pro
 //#define LK5_Pro //  for LK5pro
-//#define LKPro_BLTOUCH // for LK4 and LK5
+#define LKPro_BLTOUCH // for LK4 and LK5
 
 #define LKPro_FW_VERSION "G5"
 #define LCD_HEIGHT 4 // number of message lines in the wait screen
