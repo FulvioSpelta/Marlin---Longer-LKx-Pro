@@ -93,10 +93,10 @@
 //#define CUSTOM_STATUS_SCREEN_IMAGE
 
 // @section machine
-#define LGT_MAC //  For Alphawise and Longer U30 pro LK4 pro
-#define LK4_Pro //  for LK4pro
+#define LGT_MAC //  For Alphawise and Longer U30 pro, LK4/LK5 pro
+#define LK4_Pro //  for LK4pro, U30 Pro
 //#define LK5_Pro //  for LK5pro
-#define LKPro_BLTOUCH // for LK4 and LK5
+#define LKPro_BLTOUCH // for LK4Pro and LK5Pro
 
 #define LKPro_FW_VERSION "GC 1.2"
 #define LCD_HEIGHT 4 // number of message lines in the wait screen
