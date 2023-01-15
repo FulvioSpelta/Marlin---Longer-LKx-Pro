@@ -14,7 +14,7 @@ Here are brief installation instructions:
 7. Select the OK button to save the settings.
 8. On Longer Slicer, select Machine / Install Custom Firmware.
 9. Locate the new firmware .hex file. The firmware should update. If it does not update, do not proceed.
-10. Now use a Micro SD card between 8 and 32 GB and format it for FAT32 with a Utilization of 4096 KB. The The display will not recognize and SDHC card greater than 32GB. 
+10. Now use a Micro SD card between 4 GB and 16 GB and format it for FAT32 with a cluster size (allocation size) of 4096 bytes. Otherwise, the display will not recognize the SD card. 
 11. Extract the DWIN_SET folder from the .zip file and copy it to the formatted SD card.
 12. Open the frame around the display screen and place the SD card into the SD slot for the screen.
 13. Disconnect the USB cable from the computer before proceeding.
